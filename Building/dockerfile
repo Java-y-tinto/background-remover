@@ -1,0 +1,17 @@
+FROM python:3.9
+
+ #descargar esto https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx
+ #copiamos el modelo para evitar que se descarge de nuevo innecesariamente
+COPY u2net.onnx /home/.u2net/u2net.onxx
+
+WORKDIR /app
+
+COPY dependencias.txt .
+
+RUN pip install --no-cache-dir -r dependencias.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python","app.py"]
