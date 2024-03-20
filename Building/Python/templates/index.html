@@ -1,42 +1,62 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Carga de Imágenes</title>
+    <title>Borrador de fondos</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="container mx-auto p-4">
-        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-            <h1 class="text-2xl font-semibold mb-4">Carga tus imágenes</h1>
-            <form action="/" class="dropzone" id="mi-formulario-de-imagenes">
-                <div class="fallback">
-                    <input name="file" type="file" multiple />
-                </div>
-                <button type="submit"></button>
-            </form>
-        </div>
+    <style>
+      .drop-zone {
+        border-color: #ccc;
+      }
+
+      .drop-zone.dragover {
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 h-screen flex justify-center items-center">
+    <div id="dropZone" class="drop-zone border-2 border-dashed p-10 w-3/4 h-3/4 flex flex-col justify-center items-center cursor-pointer">
+      <h1 class="text-4xl font-bold mb-4">Arrastra aqui una imagen para borrarle el fondo usando IA</h1>
+      <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
+        <input id="fileInput" type="file" name="file" class="hidden" multiple>
+        <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300" onclick="fileInput.click()">Seleccionar archivo</button>
+        <button type="submit" class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-300">Borrar fondo</button>
+      </form>
     </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
     <script>
-        // Configuración de Dropzone
-        Dropzone.options["mi-formulario-de-imagenes"] = {
-            paramName: "file",
-            maxFilesize: 5,
-            acceptedFiles: ".jpg, .jpeg, .png",
-            dictDefaultMessage: "Arrastra y suelta tus imágenes aquí",
-            dictFileTooBig: "El archivo es demasiado grande ({{filesize}}MB). Tamaño máximo permitido: {{maxFilesize}}MB.",
-            dictInvalidFileType: "Tipo de archivo no válido. Solo se permiten imágenes (jpg, jpeg, png).",
-            init: function () {
-                this.on("success", function (file, response) {
-                    console.log("Imagen cargada con éxito:", response);
-                });
-            }
-        };
+      let dropZone = document.getElementById("dropZone");
+      let fileInput = document.getElementById("fileInput");
+      let uploadForm = document.getElementById("uploadForm");
+
+      dropZone.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+          uploadForm.submit();
+        }
+      });
+
+      dropZone.addEventListener("dragover", function (e) {
+        this.classList.add("dragover");
+      });
+
+      dropZone.addEventListener("dragleave", function (e) {
+        this.classList.remove("dragover");
+      });
+
+      dropZone.addEventListener("drop", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove("dragover");
+
+        let file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files;
+        uploadForm.submit();
+      });
     </script>
-</body>
+  </body>
 </html>
