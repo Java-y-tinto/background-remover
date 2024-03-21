@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proyecto-python-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aniquilador-de-fondos
+  template:
+    metadata:
+      labels:
+        app: quitafondos
+    spec:
+      containers:
+        - name: aniquiladordefondos-contenedor
+          image: aniquiladordefondos:v1
+          ports:
+          - containerPort: 5000
